@@ -34,10 +34,10 @@ x[(5*n/6+1):n] = runif(n/6,min=1,max=2)
 y[(5*n/6+1):n] = runif(n/6)
 z[(5*n/6+1):n] = 1 + rnorm(n/6,0,nsd)
 
-data = cbind(x,y,z)
+OpenBox = cbind(x,y,z)
 col.f = rep(1:6,each=n/6)
 open3d()
 # plot3d(x,y,z,col=col.f,axes=TRUE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1.5)
-plot3d(data,col=col.f,axes=FALSE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1)
+plot3d(OpenBox,col=col.f,axes=FALSE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1)
 
-save(data, file=paste0(save_path,"OpenBox.Rdata"))
+save(OpenBox, file=paste0(save_path,"OpenBox.Rdata"))

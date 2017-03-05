@@ -12,10 +12,65 @@ correDimEst(num, distance)
 \item{distance}{Distance object (upper triangle) from dist() fn.}
 }
 \value{
-a list of log(epsilons) (x), y and derivatives of y.
+a list of log(epsi) (x), lob(C2) (y) and derivatives of y.
 }
 \description{
 Takes in pair-wise distance of data and number of epsilons to estimate intrinsic dimension of data.
-Function storing the logC2(epsi) values and the numerical derivative of logC2 w.r.t log(epsi).
+Function returns, log(epsi) (stored in x), log(C2) (stored in y) values and the numerical derivative of log(C2) w.r.t log(epsi) (stored in deri). The estimated dimension is the level of the plateau (stable part) of the deriative of y w.r.t. x.
+}
+\examples{
+############################## example I: Spiral data
+## load data
+data(spiral)
+
+## intrinsic dimension of the data
+trueDim = 1
+
+## number of epsilons
+num = 50
+
+## pair-wise Euclidean distance
+dis = dist(spiral,method = "euclidean", diag = FALSE, upper = TRUE)
+
+## correlation dimension estimation
+est = correDimEst(num,dis)
+
+## plot correlation dimension estimation
+par(mfrow=c(1,2))
+plot(spiral,xlab='',ylab='')
+# plot(est$x,est$y,xlab="log(epsilon)",ylab="log(C2(epsilon))",main="log-log plot")
+plot(est$x[2:(length(est$x)-1)],est$deri,type="l",ylim=c(0,10),xlab="log(epsilon)",ylab="est. correlation dimension",
+     main="Estimated correlation dimension")
+abline(trueDim,0,lty=3,col="gray60",lwd=2)
+
+
+############################## example II: Open box data
+library(rgl) ## for open3d(), 3d plot
+
+## load data
+data(OpenBox)
+
+## intrinsic dimension of the data
+trueDim = 2
+
+## number of epsilons
+num = 50
+
+## pair-wise Euclidean distance
+dis = dist(OpenBox,method = "euclidean", diag = FALSE, upper = TRUE)
+
+## correlation dimension estimation
+est = correDimEst(num,dis)
+
+## plot correlation dimension estimation
+open3d()
+plot3d(OpenBox,col=col.f,axes=FALSE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1)
+
+par(mfrow=c(1,1))
+# plot(est$x,est$y,xlab="log(epsilon)",ylab="log(C2(epsilon))",main="log-log plot")
+plot(est$x[2:(length(est$x)-1)],est$deri,type="l",ylim=c(0,10),xlab="log(epsilon)",ylab="est. correlation dimension",
+     main="Estimated correlation dimension")
+abline(trueDim,0,lty=3,col="gray60",lwd=2)
+
 }
 
