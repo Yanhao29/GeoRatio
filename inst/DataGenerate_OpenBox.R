@@ -40,4 +40,4 @@ open3d()
 # plot3d(x,y,z,col=col.f,axes=TRUE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1.5)
 plot3d(OpenBox,col=col.f,axes=FALSE,box=FALSE,xlab = "", ylab = "", zlab = "",xlim=c(0,2),ylim=c(0,2),zlim=c(0,2),cex.lab=1)
 
-save(OpenBox, file=paste0(save_path,"OpenBox.Rdata"))
+save(OpenBox, file=paste0(save_path,"OpenBox.rda"))
