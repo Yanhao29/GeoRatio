@@ -1,6 +1,6 @@
 #' Calculating proportion of the pairwise L2-distance that is less than epsilon
 #' @param epsilon Epsilon value.
-#' @distance Distance object.
+#' @param distance Distance object.
 #' @return Proportion of the pairwise L2-distance that is less than epsilon.
 C2 = function(epsilon,distance){
   n=length(distance)

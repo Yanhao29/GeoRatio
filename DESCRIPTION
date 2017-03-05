@@ -2,9 +2,10 @@ Package: GeoRatio
 Type: Package
 Title: Nonlinear dimension reduction and clustering
 Version: 0.1.0
-Author: Hao Yan 
+Author: Hao Yan
 Maintainer: Hao Yan <hyan@ucdavis.edu>
 Description: Nonlinear dimension reduction and clustering
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 5.0.1
