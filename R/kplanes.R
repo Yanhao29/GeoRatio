@@ -58,7 +58,7 @@
 #'
 #' set.seed(0)
 #' temp = kplanes(SwissRoll, k=K, d=trueDim, iter.max=1000, thresh=thresh)
-#' OpenBox_rep = temp[[2]]
+#' SwissRoll_rep = temp[[2]]
 #' cluster_id = temp[[1]]
 #' error_rep = temp[[3]]
 #'
