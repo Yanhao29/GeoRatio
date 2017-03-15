@@ -1,39 +1,47 @@
-############################## example I: V-shape
+############################## example IV: Swiss Roll
 rm(list = ls())
 ## package for pam() kmeans clustering
 library(cluster)
 library(igraph) ## used by GeoRatio_graph
 library(GeoRatio)
 library(xtable)
+library(rgl)
 
-# ## load data
-# data(V_shape)
 
 ## SD of noise
-nsd = 0.003
+nsd = 0.1
 
 ## number of data points
-n=200
+n=2000
 set.seed(100)
 
-x = runif(n,min=-0.5,max=0.5)
-i.f = which(x>0)
-y = rep(0,n)
-y[i.f] = 0.2*(x[i.f])
-x[i.f] = -x[i.f]
+p = runif(n,min=0,max=1)
+q = runif(n,min=0,max=1)
+t = 3*pi/2*(1+2*p)
 
-data_nl = cbind(-x,y)
+x = t*cos(t)+ rnorm(n,0,nsd)
+y = t*sin(t)+ rnorm(n,0,nsd)
+z = 30*q+ rnorm(n,0,nsd)
 
-x = x+rnorm(n,mean=0,sd=nsd)
-y = y+rnorm(n,mean=0,sd=nsd)
+xx = t*cos(t)
+yy = t*sin(t)
+zz = 30*q
 
-data = cbind(-x,y)
+data = cbind(x,y,z)
+data_nl = cbind(xx,yy,zz)
+
+rbPal <- colorRampPalette(c('red','yellow'))
+col.plot <- rbPal(20)[as.numeric(cut(t,breaks = 20))]
+open3d()
+plot3d(data,col=col.plot,axes=TRUE,box=FALSE,xlab = "", ylab = "", zlab = "")
+open3d()
+plot3d(data_nl,col=col.plot,axes=TRUE,box=FALSE,xlab = "", ylab = "", zlab = "")
+
 
 ## intrinsic dimension of the data
-trueDim = 1
-
+trueDim = 2
 ## cluster number
-K = 2
+K = 8
 
 ############## correlation dimension estimation
 ## number of epsilons
@@ -52,8 +60,8 @@ plot(est$x[2:(length(est$x)-1)],est$deri,type="l",ylim=c(0,10),xlab="log(epsilon
 abline(trueDim,0,lty=3,col="gray60",lwd=2)
 
 ##### decide k_M (plateau log(epsi) from -4.8 to -2.8)
-epsi_s = -4.5
-epsi_e = -2.5
+epsi_s = -1.2
+epsi_e = 1.8
 epsi_seq = seq(epsi_s,epsi_e,length=5)
 
 dis_L2 = as.matrix(dist(data))
@@ -68,7 +76,7 @@ for(i in 1:length(epsi_seq)){
 }
 
 ## parameters for GeoRatio_graph()
-k_M = 15
+k_M = 20
 k_m = 3
 pca_thre = 0.9
 
@@ -113,23 +121,35 @@ indi_lpca = lpca_data$indicator
 now_LPCA = lpca(indi_lpca, data, d=trueDim)
 X_LPCA = now_LPCA$X.rep
 
-par(mfrow=c(3,3))
-plot(data,col=indi_HGR,main="HC-GR")
-plot(data,col=indi_HG,main="HC-G")
-plot(data,col=indi_HL2,main="HC-L2")
-plot(data,col=indi_KMGR,main="KMC-GR")
-plot(data,col=indi_KMG,main="KMC-G")
-plot(data,col=indi_KML2,main="KMC-L2")
-plot(data,col=indi_lpca,main="LPCA")
+open3d()
+plot3d(data,col=indi_HGR,main="HC-GR")
+open3d()
+plot3d(data,col=indi_HG,main="HC-G")
+open3d()
+plot3d(data,col=indi_HL2,main="HC-L2")
+oepn3d()
+plot3d(data,col=indi_KMGR,main="KMC-GR")
+open3d()
+plot3d(data,col=indi_KMG,main="KMC-G")
+open3d()
+plot3d(data,col=indi_KML2,main="KMC-L2")
+open3d()
+plot3d(data,col=indi_lpca,main="LPCA")
 
-par(mfrow=c(3,3))
-plot(X_HCGR,col=indi_HGR,main="HC-GR")
-plot(X_HCG,col=indi_HG,main="HC-G")
-plot(X_HCL2,col=indi_HL2,main="HC-L2")
-plot(X_KMCGR,col=indi_KMGR,main="KMC-GR")
-plot(X_KMCG,col=indi_KMG,main="KMC-G")
-plot(X_KMCL2,col=indi_KML2,main="KMC-L2")
-plot(X_LPCA,col=indi_lpca,main="LPCA")
+open3d()
+plot3d(X_HCGR,col=indi_HGR,main="HC-GR")
+open3d()
+plot3d(X_HCG,col=indi_HG,main="HC-G")
+open3d()
+plot3d(X_HCL2,col=indi_HL2,main="HC-L2")
+open3d()
+plot3d(X_KMCGR,col=indi_KMGR,main="KMC-GR")
+open3d()
+plot3d(X_KMCG,col=indi_KMG,main="KMC-G")
+open3d()
+plot3d(X_KMCL2,col=indi_KML2,main="KMC-L2")
+open3d()
+plot3d(X_LPCA,col=indi_lpca,main="LPCA")
 
 # data_nl[1,]
 # data[1,]
@@ -442,14 +462,13 @@ plot(1:10,e_LPCA,type="b",main="Average representation error")
 ################################# 
 ## All tables
 ################################# 
-xtable(rbind(e_HCGR,e_KMCGR,e_HCG,e_KMCG,e_HCL2,e_KMCL2,e_LPCA)*1000)
-xtable(rbind(e_sd_HCGR,e_sd_KMCGR,e_sd_HCG,e_sd_KMCG,e_sd_HCL2,e_sd_KMCL2,e_sd_LPCA)*1000)
+xtable(rbind(e_HCGR,e_KMCGR,e_HCG,e_KMCG,e_HCL2,e_KMCL2,e_LPCA)*100)
+xtable(rbind(e_sd_HCGR,e_sd_KMCGR,e_sd_HCG,e_sd_KMCG,e_sd_HCL2,e_sd_KMCL2,e_sd_LPCA)*100)
 
-xtable(rbind(e_HCGR_nl,e_KMCGR_nl,e_HCG_nl,e_KMCG_nl,e_HCL2_nl,e_KMCL2_nl,e_LPCA_nl)*1000)
-xtable(rbind(e_sd_HCGR_nl,e_sd_KMCGR_nl,e_sd_HCG_nl,e_sd_KMCG_nl,e_sd_HCL2_nl,e_sd_KMCL2_nl,e_sd_LPCA_nl)*1000)
+xtable(rbind(e_HCGR_nl,e_KMCGR_nl,e_HCG_nl,e_KMCG_nl,e_HCL2_nl,e_KMCL2_nl,e_LPCA_nl)*100)
+xtable(rbind(e_sd_HCGR_nl,e_sd_KMCGR_nl,e_sd_HCG_nl,e_sd_KMCG_nl,e_sd_HCL2_nl,e_sd_KMCL2_nl,e_sd_LPCA_nl)*100)
 
 xtable(rbind(sil_HCGR,sil_KMCGR,sil_HCG,sil_KMCG,sil_HCL2,sil_KMCL2))
-
 
 size_axis = 1.5
 size_lab = 1.5
@@ -468,10 +487,10 @@ abline(v=K,col='gray60',lty=3,lwd=2)
 # legend(6,1.5,c("HC-GR","HC-G","HC-L2","KMC-GR","KMC-G","KMC-L2"),pch=c(1,1,1,2,2,2),col=c(2,3,1,2,3,1),lwd=c(2,1,1,1,1,1))
 # dev.off()
 
-# pdf(paste0(save_path,'V_shape',toString(k_M), '_error.pdf'),width=5.5, height=5)
+# pdf(paste0(save_path,'M_shape',toString(k_M), '_error.pdf'),width=5.5, height=5)
 # par(oma=c(0,0.4,0,0),mfrow=c(1,1))
 limi = max(rbind(e_HCGR,e_HCG,e_HCL2,e_KMCGR,e_KMCG,e_KMCL2))
-plot(1:10,e_HCGR,type="b",pch=1,lty=1,col=2,lwd=2,ylim=c(0,limi),xlab="number of clusters",ylab="error"
+plot(1:10,e_HCGR,type="b",pch=1,lty=1,col=2,lwd=2,ylim=c(0,1),xlab="number of clusters",ylab="error"
      ,cex.axis=size_axis,cex.lab=size_lab,cex.main=size_main)
 points(1:10,e_HCG,type="b",pch=1,lty=1,col=3)
 points(1:10,e_HCL2,type="b",pch=1,lty=1,col=1)
@@ -480,4 +499,4 @@ points(1:10,e_KMCG,type="b",pch=2,lty=1,col=3)
 points(1:10,e_KMCL2,type="b",pch=2,lty=1,col=1)
 points(1:10,e_LPCA,type="b",pch=3,lty=2,col=4)
 abline(v=K,col='gray60',lty=3,lwd=2)
-legend(7,limi,c("HC-GR","HC-G","HC-L2","KMC-GR","KMC-G","KMC-L2","LPCA"),pch=c(1,1,1,2,2,2,3),col=c(2,3,1,2,3,1,4),lwd=c(2,1,1,1,1,1,1),lty=c(1,1,1,1,1,1,2))
+legend(6,1,c("HC-GR","HC-G","HC-L2","KMC-GR","KMC-G","KMC-L2","LPCA"),pch=c(1,1,1,2,2,2,3),col=c(2,3,1,2,3,1,4),lwd=c(2,1,1,1,1,1,1),lty=c(1,1,1,1,1,1,2))
